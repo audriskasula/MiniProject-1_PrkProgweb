@@ -1,0 +1,280 @@
+/* css/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg-color: #0D0D0D;
+    --card-bg: rgba(26, 26, 26, 0.6);
+    --primary: #FF6A00;
+    --primary-glow: #FFA500;
+    --text-main: #F5F5F5;
+    --text-muted: #A0A0A0;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Header & Navbar */
+header {
+    background: rgba(13, 13, 13, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo span {
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary-glow);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+nav ul li a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: var(--primary);
+}
+
+.btn-login {
+    border: 1px solid var(--primary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    color: var(--primary);
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+/* Footer */
+footer {
+    background: #111;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    padding: 2rem;
+    margin-top: 4rem;
+    color: var(--text-muted);
+}
+
+/* Buttons */
+.btn-primary {
+    display: inline-block;
+    background: linear-gradient(45deg, var(--primary), var(--primary-glow));
+    color: #fff;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(255, 106, 0, 0.4);
+}
+
+/* Layout Utilities */
+.container {
+    padding: 2rem 5%;
+}
+
+/* Forms & Inputs */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+}
+
+.form-control {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 1rem;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(255, 106, 0, 0.2);
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress Bar */
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-glow));
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* --- Specific Pages --- */
+
+/* Hero Section (Index) */
+.hero {
+    text-align: center;
+    padding: 6rem 5%;
+    background: radial-gradient(circle at center, rgba(255,106,0,0.15) 0%, transparent 50%);
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(255, 106, 0, 0.3);
+}
+
+.hero p {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+/* Search Bar */
+.search-filter {
+    display: flex;
+    gap: 1rem;
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    max-width: 900px;
+    margin: 0 auto 3rem;
+}
+
+.search-filter input, .search-filter select {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.8rem;
+    border-radius: 6px;
+}
+
+.search-filter option { background: var(--bg-color); }
+
+/* Campaign Grid */
+.campaign-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.campaign-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.campaign-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(255, 106, 0, 0.1);
+}
+
+.card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body { padding: 1.5rem; }
+.card-category { color: var(--primary); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+.card-title { font-size: 1.2rem; margin: 0.5rem 0; }
+.card-organizer { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+.card-stats { display: flex; justify-content: space-between; font-size: 0.9rem; margin-top: 0.5rem; }
+
+/* Detail Page Layout (3 Columns) */
+.detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.detail-img { width: 100%; border-radius: 12px; border: 1px solid var(--border-color); }
+.detail-content h1 { margin-bottom: 0.5rem; }
+.badge { display: inline-block; padding: 0.3rem 0.8rem; background: rgba(255,106,0,0.1); color: var(--primary); border-radius: 20px; font-size: 0.8rem; border: 1px solid var(--primary); margin-bottom: 1rem; margin-right: 0.5rem;}
+.detail-desc { color: var(--text-muted); margin-top: 1.5rem; white-space: pre-line; }
+
+/* Center Cards (Login & Donasi) */
+.center-card-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 500px;
+}
