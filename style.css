@@ -1,33 +1,20 @@
 /* css/style.css */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-:root {
-    --bg-color: #0D0D0D;
-    --card-bg: rgba(26, 26, 26, 0.6);
-    --primary: #FF6A00;
-    --primary-glow: #FFA500;
-    --text-main: #F5F5F5;
-    --text-muted: #A0A0A0;
-    --border-color: rgba(255, 255, 255, 0.1);
-}
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
+    background-color: white;
     line-height: 1.6;
     overflow-x: hidden;
+    margin: 0;
 }
 
 /* Header & Navbar */
 header {
-    background: rgba(13, 13, 13, 0.8);
+    background: white;
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
