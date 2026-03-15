@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Crowdfunding Sosial</title>
+    <title>PeduliSemua - Sistem Crowdfunding Sosial</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
 
+<body>
     <header>
         <a href="index.html" class="logo"><span>⚡</span> PeduliSemua</a>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#">Campaign</a></li>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="#kampanye">Kampanye</a></li>
                 <li><a href="login.html" class="btn-login">Login</a></li>
             </ul>
         </nav>
     </header>
 
     <section class="hero">
-        <h1>Bersama Kita Bisa Mengubah Dunia</h1>
-        <p>Platform crowdfunding modern untuk membantu sesama. Temukan kampanye sosial dan mulai berdonasi hari ini.</p>
+        <h1 class="hero-title">Bersama Kita Bisa <br> Mengubah Dunia</h1>
+        <p>Platform crowdfunding modern untuk membantu sesama. Temukan kampanye sosial pilihan dan mulai berbagi
+            kebaikan hari ini.</p>
     </section>
 
     <div class="container">
@@ -39,81 +41,79 @@
                 <option value="jawa">Jawa</option>
                 <option value="luar-jawa">Luar Jawa</option>
             </select>
-            <select>
-                <option value="">Target Dana</option>
-                <option value="<10m">< Rp 10 Juta</option>
-                <option value=">10m">> Rp 10 Juta</option>
-            </select>
-            <button class="btn-primary" style="width: auto;">Cari</button>
+            <button class="btn-primary search-btn">Cari</button>
         </div>
 
-        <div class="campaign-grid">
+        <div class="campaign-grid" id="kampanye">
             <div class="campaign-card">
-                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=600" alt="Bencana" class="card-img">
+                <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=600"
+                    alt="Bencana" class="card-img">
                 <div class="card-body">
                     <span class="card-category">Lingkungan</span>
                     <h3 class="card-title">Penanaman 1000 Pohon Mangrove di Pesisir</h3>
                     <p class="card-organizer">Oleh: UKDW Peduli</p>
-                    
+
                     <div class="progress-container">
                         <div class="progress-fill" style="width: 75%;"></div>
                     </div>
-                    
+
                     <div class="card-stats">
-                        <span>Terkumpul: <strong>Rp 15.000.000</strong></span>
-                        <span>Sisa: <strong>14 Hari</strong></span>
+                        <h4>Terkumpul: <strong>Rp 15.000.000</strong></h4>
+                        <h4>Sisa: <strong>14 Hari</strong></h4>
                     </div>
-                    <div class="card-stats" style="margin-bottom: 1rem; color: #A0A0A0;">
+                    <div class="card-stats card-stats-target">
                         <span>Target: Rp 20.000.000</span>
                     </div>
-                    
-                    <a href="detail.html" class="btn-primary">Lihat Detail</a>
+
+                    <a href="detail.html" class="btn-primary mt-3">Lihat Detail</a>
                 </div>
             </div>
 
             <div class="campaign-card">
-                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600" alt="Pendidikan" class="card-img">
+                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=600"
+                    alt="Pendidikan" class="card-img">
                 <div class="card-body">
                     <span class="card-category">Pendidikan</span>
                     <h3 class="card-title">Beasiswa Penuh untuk Talenta IT Muda</h3>
                     <p class="card-organizer">Oleh: UKDW Talents</p>
-                    
+
                     <div class="progress-container">
                         <div class="progress-fill" style="width: 40%;"></div>
                     </div>
-                    
+
                     <div class="card-stats">
-                        <span>Terkumpul: <strong>Rp 20.000.000</strong></span>
-                        <span>Sisa: <strong>30 Hari</strong></span>
+                        <h4>Terkumpul: <strong>Rp 20.000.000</strong></h4>
+                        <h4>Sisa: <strong>30 Hari</strong></h4>
                     </div>
-                    <div class="card-stats" style="margin-bottom: 1rem; color: #A0A0A0;">
+                    <div class="card-stats card-stats-target">
                         <span>Target: Rp 50.000.000</span>
                     </div>
-                    
-                    <a href="detail.html" class="btn-primary">Lihat Detail</a>
+
+                    <a href="detail.html" class="btn-primary mt-3">Lihat Detail</a>
                 </div>
             </div>
 
             <div class="campaign-card">
-                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=600" alt="Bencana" class="card-img">
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=600"
+                    alt="Bencana" class="card-img">
                 <div class="card-body">
                     <span class="card-category">Bencana Alam</span>
                     <h3 class="card-title">Bantuan Darurat Erupsi Gunung</h3>
                     <p class="card-organizer">Oleh: Relawan UKDW</p>
-                    
+
                     <div class="progress-container">
                         <div class="progress-fill" style="width: 90%;"></div>
                     </div>
-                    
+
                     <div class="card-stats">
-                        <span>Terkumpul: <strong>Rp 45.000.000</strong></span>
-                        <span>Sisa: <strong>3 Hari</strong></span>
+                        <h4>Terkumpul: <strong>Rp 45.000.000</strong></h4>
+                        <h4>Sisa: <strong>3 Hari</strong></h4>
                     </div>
-                    <div class="card-stats" style="margin-bottom: 1rem; color: #A0A0A0;">
+                    <div class="card-stats card-stats-target">
                         <span>Target: Rp 50.000.000</span>
                     </div>
-                    
-                    <a href="detail.html" class="btn-primary">Lihat Detail</a>
+
+                    <a href="detail.html" class="btn-primary mt-3">Lihat Detail</a>
                 </div>
             </div>
         </div>
@@ -124,4 +124,5 @@
     </footer>
 
 </body>
+
 </html>
