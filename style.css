@@ -85,8 +85,8 @@ footer {
 /* Buttons */
 .btn-primary {
     display: inline-block;
-    background: linear-gradient(45deg, var(--primary), var(--primary-glow));
-    color: #fff;
+    background: black;
+    color: white;
     padding: 0.8rem 2rem;
     border-radius: 8px;
     text-decoration: none;
@@ -121,12 +121,13 @@ footer {
 
 .form-control {
     width: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background:whitesmoke;
     border: 1px solid var(--border-color);
-    color: var(--text-main);
+    color: black;
     padding: 1rem;
     border-radius: 8px;
     transition: border-color 0.3s, box-shadow 0.3s;
+    margin: -13px; 
 }
 
 .form-control:focus {
