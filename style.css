@@ -272,6 +272,12 @@ footer p {
 
 .card-body {
     padding: 1.75rem;
+    min-height: 300px;
+
+}
+
+.button-campaign {
+    padding: 1.75rem;
 }
 
 .card-category {
