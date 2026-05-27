@@ -110,7 +110,10 @@ nav ul li a:hover {
 }
 
 .hero-inner {
-    background: url('gambar/anaksekolah.svg') center/cover no-repeat;
+    background-image: url('gambar/anaksekolah.svg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     border-radius: 24px;
     height: 500px;
     display: flex;

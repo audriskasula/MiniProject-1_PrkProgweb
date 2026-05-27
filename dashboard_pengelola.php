@@ -11,6 +11,16 @@ $pengelola_id = $_SESSION['user_id'];
 $success = "";
 $error = "";
 
+// Flash messages dari upload_gambar.php
+if (isset($_SESSION['flash_success'])) {
+    $success = $_SESSION['flash_success'];
+    unset($_SESSION['flash_success']);
+}
+if (isset($_SESSION['flash_error'])) {
+    $error = $_SESSION['flash_error'];
+    unset($_SESSION['flash_error']);
+}
+
 // Handle Delete
 if (isset($_GET['delete'])) {
     $id_to_delete = (int) $_GET['delete'];
@@ -80,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         // Tambah baru
         if ($gambar == "")
-            $gambar = "uploads/default.jpg"; // fallback
+            $gambar = "uploads/placeholder.svg"; // placeholder default
         $stmt = $conn->prepare("INSERT INTO kampanye (pengelola_id, judul_kampanye, kategori, lokasi, deskripsi, target_dana, batas_waktu, gambar, rekening_donasi) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("issssdsss", $pengelola_id, $judul, $kategori, $lokasi, $deskripsi, $target_dana, $batas_waktu, $gambar, $rekening);
         if ($stmt->execute())
@@ -150,11 +160,13 @@ if (isset($_GET['edit'])) {
 
         <?php if ($success): ?>
             <div style="background-color: #dcfce7; color: #16a34a; padding: 10px; border-radius: 8px; margin-bottom: 1rem;">
-                <?php echo $success; ?></div>
+                <?php echo $success; ?>
+            </div>
         <?php endif; ?>
         <?php if ($error): ?>
             <div style="background-color: #fee2e2; color: #dc2626; padding: 10px; border-radius: 8px; margin-bottom: 1rem;">
-                <?php echo $error; ?></div>
+                <?php echo $error; ?>
+            </div>
         <?php endif; ?>
 
         <div class="glass-card" style="margin-bottom: 3rem;">
@@ -215,8 +227,15 @@ if (isset($_GET['edit'])) {
                     </div>
 
                     <div class="form-group">
-                        <label>Gambar / Poster (Biarkan kosong jika tidak ingin mengubah)</label>
-                        <input type="file" name="gambar" class="form-control" accept="image/*" <?php echo $edit_data ? '' : 'required'; ?>>
+                        <label>Gambar / Poster
+                            <?php echo $edit_data ? '(Kosongkan jika tidak ingin mengubah)' : '(Opsional, default: placeholder)'; ?></label>
+                        <input type="file" name="gambar" class="form-control" accept="image/*">
+                        <?php if ($edit_data && $edit_data['gambar']): ?>
+                            <div style="margin-top: 8px;">
+                                <img src="<?php echo htmlspecialchars($edit_data['gambar']); ?>" alt="Preview"
+                                    style="max-height: 80px; border-radius: 6px; border: 1px solid var(--border);">
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -236,6 +255,7 @@ if (isset($_GET['edit'])) {
             <table style="width: 100%; border-collapse: collapse;">
                 <thead style="background: rgba(255,255,255,0.05);">
                     <tr>
+                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Gambar</th>
                         <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Judul</th>
                         <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Target</th>
                         <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Terkumpul
@@ -249,14 +269,32 @@ if (isset($_GET['edit'])) {
                     <?php if (count($kampanyes) > 0): ?>
                         <?php foreach ($kampanyes as $k): ?>
                             <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border); width: 120px;">
+                                    <div style="position: relative;">
+                                        <img src="<?php echo htmlspecialchars($k['gambar']); ?>" alt="Gambar"
+                                            style="width: 90px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); display: block;">
+                                        <?php if ($k['gambar'] == 'uploads/placeholder.svg'): ?>
+                                            <span
+                                                style="display: inline-block; margin-top: 4px; font-size: 0.7rem; color: var(--text-muted); background: rgba(99,102,241,0.1); padding: 2px 6px; border-radius: 4px;">Placeholder</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <!-- <form action="upload_gambar.php" method="POST" enctype="multipart/form-data" style="margin-top: 6px;">
+                                        <input type="hidden" name="kampanye_id" value="<?php echo $k['id']; ?>">
+                                        <input type="file" name="gambar" accept="image/*" style="font-size: 0.7rem; width: 100px;" onchange="this.form.submit()" required>
+                                    </form> -->
+                                </td>
                                 <td style="padding: 15px; border-bottom: 1px solid var(--border);">
-                                    <?php echo htmlspecialchars($k['judul_kampanye']); ?></td>
+                                    <?php echo htmlspecialchars($k['judul_kampanye']); ?>
+                                </td>
                                 <td style="padding: 15px; border-bottom: 1px solid var(--border);">Rp
-                                    <?php echo number_format($k['target_dana'], 0, ',', '.'); ?></td>
+                                    <?php echo number_format($k['target_dana'], 0, ',', '.'); ?>
+                                </td>
                                 <td style="padding: 15px; border-bottom: 1px solid var(--border);">Rp
-                                    <?php echo number_format($k['dana_terkumpul'], 0, ',', '.'); ?></td>
+                                    <?php echo number_format($k['dana_terkumpul'], 0, ',', '.'); ?>
+                                </td>
                                 <td style="padding: 15px; border-bottom: 1px solid var(--border);">
-                                    <?php echo $k['batas_waktu']; ?></td>
+                                    <?php echo $k['batas_waktu']; ?>
+                                </td>
                                 <td style="padding: 15px; border-bottom: 1px solid var(--border); text-align: center;">
                                     <a href="dashboard_pengelola.php?edit=<?php echo $k['id']; ?>"
                                         style="color: var(--primary); margin-right: 10px;">Edit</a>
@@ -268,7 +306,7 @@ if (isset($_GET['edit'])) {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" style="padding: 15px; text-align: center;">Belum ada kampanye.</td>
+                            <td colspan="6" style="padding: 15px; text-align: center;">Belum ada kampanye.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

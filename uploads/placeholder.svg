@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e0e7ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c7d2fe;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg)" rx="12"/>
+  <g transform="translate(300,170)">
+    <rect x="-40" y="-30" width="80" height="60" rx="8" fill="none" stroke="#818cf8" stroke-width="3"/>
+    <circle cx="0" cy="-8" r="10" fill="none" stroke="#818cf8" stroke-width="2.5"/>
+    <polyline points="-30,25 -10,5 5,20 15,10 30,25" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+  <text x="300" y="250" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#6366f1" font-weight="600">Belum ada gambar</text>
+  <text x="300" y="275" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#a5b4fc">Upload gambar untuk kampanye ini</text>
+</svg>

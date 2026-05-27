@@ -31,7 +31,7 @@ CREATE TABLE `kampanye` (
   `target_dana` decimal(15,2) NOT NULL,
   `dana_terkumpul` decimal(15,2) DEFAULT 0.00,
   `batas_waktu` date NOT NULL,
-  `gambar` varchar(255) NOT NULL,
+  `gambar` varchar(255) NOT NULL DEFAULT 'uploads/placeholder.svg',
   `rekening_donasi` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pengelola_id` (`pengelola_id`),
@@ -39,9 +39,9 @@ CREATE TABLE `kampanye` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `kampanye` (`pengelola_id`, `judul_kampanye`, `kategori`, `lokasi`, `deskripsi`, `target_dana`, `dana_terkumpul`, `batas_waktu`, `gambar`, `rekening_donasi`) VALUES
-(3, 'Bantuan Seragam Sekolah Anak Yatim', 'Pendidikan', 'Jawa', 'Mari bantu anak-anak panti asuhan mendapatkan seragam baru untuk tahun ajaran baru.', 15000000.00, 5000000.00, DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800', 'BCA 123456789 a/n Yayasan Peduli Anak'),
-(4, 'Penanaman 1000 Pohon Mangrove di Pesisir', 'Lingkungan', 'Luar Jawa', 'Program rehabilitasi hutan mangrove di pesisir utara.', 20000000.00, 15000000.00, DATE_ADD(CURDATE(), INTERVAL 14 DAY), 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800', 'Mandiri 987654321 a/n Komunitas Hijau'),
-(3, 'Bantuan Darurat Korban Banjir', 'Bencana Alam', 'Jawa', 'Bantuan segera untuk korban banjir bandang di daerah X.', 50000000.00, 45000000.00, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800', 'BRI 111222333 a/n Yayasan Peduli Anak');
+(3, 'Bantuan Seragam Sekolah Anak Yatim', 'Pendidikan', 'Jawa', 'Mari bantu anak-anak panti asuhan mendapatkan seragam baru untuk tahun ajaran baru.', 15000000.00, 5000000.00, DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'uploads/kampanye1.jpg', 'BCA 123456789 a/n Yayasan Peduli Anak'),
+(4, 'Penanaman 1000 Pohon Mangrove di Pesisir', 'Lingkungan', 'Luar Jawa', 'Program rehabilitasi hutan mangrove di pesisir utara.', 20000000.00, 15000000.00, DATE_ADD(CURDATE(), INTERVAL 14 DAY), 'uploads/kampanye2.jpg', 'Mandiri 987654321 a/n Komunitas Hijau'),
+(3, 'Bantuan Darurat Korban Banjir', 'Bencana Alam', 'Jawa', 'Bantuan segera untuk korban banjir bandang di daerah X.', 50000000.00, 45000000.00, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'uploads/kampanye3.jpg', 'BRI 111222333 a/n Yayasan Peduli Anak');
 
 CREATE TABLE `donasi` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

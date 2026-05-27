@@ -163,7 +163,7 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
                     $days_left = $interval->format('%a');
                 ?>
                     <a href="detail.php?id=<?php echo $k['id']; ?>" class="campaign-card">
-                        <img src="<?php echo htmlspecialchars($k['gambar']); ?>" alt="Kampanye" class="card-img">
+                        <img src="<?php echo htmlspecialchars($k['gambar']); ?>" alt="<?php echo htmlspecialchars($k['judul_kampanye']); ?>" class="card-img" onerror="this.onerror=null;this.src='uploads/placeholder.svg';">
                         <div class="card-body">
                             <span class="card-category"><?php echo htmlspecialchars($k['kategori']); ?> <span class="check-icon">✔</span></span>
                             <h3 class="card-title"><?php echo htmlspecialchars($k['judul_kampanye']); ?></h3>
