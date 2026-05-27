@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'koneksi.php';
+require 'config/koneksi.php';
 
 if (!isset($_GET['id'])) {
     header("Location: index.php");
@@ -56,7 +56,9 @@ $days_left = $interval->format('%a');
     <div class="container">
         <div class="detail-layout">
             <div class="detail-content">
-                <img src="<?php echo htmlspecialchars($k['gambar']); ?>" alt="<?php echo htmlspecialchars($k['judul_kampanye']); ?>" class="detail-img" onerror="this.onerror=null;this.src='uploads/placeholder.svg';">
+                <img src="<?php echo htmlspecialchars($k['gambar']); ?>"
+                    alt="<?php echo htmlspecialchars($k['judul_kampanye']); ?>" class="detail-img"
+                    onerror="this.onerror=null;this.src='uploads/placeholder.svg';">
 
                 <div class="detail-header-badges">
                     <span class="badge"><?php echo htmlspecialchars($k['kategori']); ?></span>

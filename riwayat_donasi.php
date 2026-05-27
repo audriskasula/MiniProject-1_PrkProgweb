@@ -1,9 +1,9 @@
 <?php
 session_start();
-require 'koneksi.php';
+require 'config/koneksi.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'donatur') {
-    header("Location: login.php");
+    header("Location: auth/login.php");
     exit();
 }
 
@@ -48,12 +48,14 @@ $history = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Donasi - PeduliSemua</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header>
@@ -61,60 +63,73 @@ $history = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         <nav>
             <ul>
                 <li><a href="index.php">Beranda</a></li>
-                <li><a href="logout.php" class="btn-login" style="background:var(--error); border-color:var(--error); color:white;">Logout</a></li>
+                <li><a href="auth/logout.php" class="btn-login"
+                        style="background:var(--error); border-color:var(--error); color:white;">Logout</a></li>
             </ul>
         </nav>
     </header>
 
     <div class="container" style="max-width: 800px;">
         <h2 style="margin-bottom: 2rem;">Ringkasan Donasi</h2>
-        
+
         <div class="campaign-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 3rem;">
             <div class="glass-card" style="text-align: center; border-bottom: 4px solid #16a34a;">
                 <h3 style="color: #16a34a; margin-bottom: 10px;">Verified</h3>
-                <p style="font-size: 1.5rem; font-weight: bold;">Rp <?php echo number_format($summary['VERIFIED']['nominal'], 0, ',', '.'); ?></p>
+                <p style="font-size: 1.5rem; font-weight: bold;">Rp
+                    <?php echo number_format($summary['VERIFIED']['nominal'], 0, ',', '.'); ?></p>
                 <p style="color: var(--text-muted);">(<?php echo $summary['VERIFIED']['count']; ?> donasi)</p>
             </div>
             <div class="glass-card" style="text-align: center; border-bottom: 4px solid #eab308;">
                 <h3 style="color: #eab308; margin-bottom: 10px;">Pending</h3>
-                <p style="font-size: 1.5rem; font-weight: bold;">Rp <?php echo number_format($summary['PENDING']['nominal'], 0, ',', '.'); ?></p>
+                <p style="font-size: 1.5rem; font-weight: bold;">Rp
+                    <?php echo number_format($summary['PENDING']['nominal'], 0, ',', '.'); ?></p>
                 <p style="color: var(--text-muted);">(<?php echo $summary['PENDING']['count']; ?> donasi)</p>
             </div>
             <div class="glass-card" style="text-align: center; border-bottom: 4px solid #dc2626;">
                 <h3 style="color: #dc2626; margin-bottom: 10px;">Ditolak</h3>
-                <p style="font-size: 1.5rem; font-weight: bold;">Rp <?php echo number_format($summary['REJECTED']['nominal'], 0, ',', '.'); ?></p>
+                <p style="font-size: 1.5rem; font-weight: bold;">Rp
+                    <?php echo number_format($summary['REJECTED']['nominal'], 0, ',', '.'); ?></p>
                 <p style="color: var(--text-muted);">(<?php echo $summary['REJECTED']['count']; ?> donasi)</p>
             </div>
         </div>
 
         <h2 style="margin-bottom: 1.5rem;">Riwayat Donasi</h2>
-        
+
         <div class="glass-card" style="padding: 0; overflow: hidden;">
             <table style="width: 100%; border-collapse: collapse;">
                 <thead style="background: rgba(255,255,255,0.05);">
                     <tr>
-                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Tanggal</th>
-                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Kampanye</th>
-                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Nominal</th>
+                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Tanggal
+                        </th>
+                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Kampanye
+                        </th>
+                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Nominal
+                        </th>
                         <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (count($history) > 0): ?>
-                        <?php foreach ($history as $h): 
+                        <?php foreach ($history as $h):
                             $status_class = '';
-                            if ($h['status'] == 'VERIFIED') $status_class = 'status-verified';
-                            else if ($h['status'] == 'PENDING') $status_class = 'status-pending';
-                            else $status_class = 'status-rejected';
-                        ?>
-                        <tr>
-                            <td style="padding: 15px; border-bottom: 1px solid var(--border);"><?php echo date('d M Y H:i', strtotime($h['tanggal_donasi'])); ?></td>
-                            <td style="padding: 15px; border-bottom: 1px solid var(--border);"><?php echo htmlspecialchars($h['judul_kampanye']); ?></td>
-                            <td style="padding: 15px; border-bottom: 1px solid var(--border);">Rp <?php echo number_format($h['nominal'], 0, ',', '.'); ?></td>
-                            <td style="padding: 15px; border-bottom: 1px solid var(--border);">
-                                <span class="status-badge <?php echo $status_class; ?>"><?php echo $h['status']; ?></span>
-                            </td>
-                        </tr>
+                            if ($h['status'] == 'VERIFIED')
+                                $status_class = 'status-verified';
+                            else if ($h['status'] == 'PENDING')
+                                $status_class = 'status-pending';
+                            else
+                                $status_class = 'status-rejected';
+                            ?>
+                            <tr>
+                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">
+                                    <?php echo date('d M Y H:i', strtotime($h['tanggal_donasi'])); ?></td>
+                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">
+                                    <?php echo htmlspecialchars($h['judul_kampanye']); ?></td>
+                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">Rp
+                                    <?php echo number_format($h['nominal'], 0, ',', '.'); ?></td>
+                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">
+                                    <span class="status-badge <?php echo $status_class; ?>"><?php echo $h['status']; ?></span>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
@@ -127,4 +142,5 @@ $history = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     </div>
 
 </body>
+
 </html>

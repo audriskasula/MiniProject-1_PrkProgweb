@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'koneksi.php';
+require 'config/koneksi.php';
 
 // Pagination setup
 $limit = 6;
@@ -62,12 +62,14 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeduliSemua - Crowdfunding Platform</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
         <a href="index.php" class="logo"><span class="logo-icon">❇</span> PeduliSemua</a>
@@ -82,13 +84,15 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
         <div>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <?php if ($_SESSION['role'] == 'pengelola'): ?>
-                    <a href="dashboard_pengelola.php" class="btn-login" style="margin-right: 10px; background: #fff; border: 1px solid #eaeaea;">Dashboard</a>
+                    <a href="admin/dashboard_pengelola.php" class="btn-login"
+                        style="margin-right: 10px; background: #fff; border: 1px solid #eaeaea;">Dashboard</a>
                 <?php else: ?>
-                    <a href="riwayat_donasi.php" class="btn-login" style="margin-right: 10px; background: #fff; border: 1px solid #eaeaea;">Riwayat</a>
+                    <a href="riwayat_donasi.php" class="btn-login"
+                        style="margin-right: 10px; background: #fff; border: 1px solid #eaeaea;">Riwayat</a>
                 <?php endif; ?>
-                <a href="logout.php" class="btn-login" style="background:#ff4d4f; color:#fff !important;">Keluar</a>
+                <a href="auth/logout.php" class="btn-login" style="background:#ff4d4f; color:#fff !important;">Keluar</a>
             <?php else: ?>
-                <a href="login.php" class="btn-login">Masuk</a>
+                <a href="auth/login.php" class="btn-login">Masuk</a>
             <?php endif; ?>
         </div>
     </header>
@@ -108,23 +112,27 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
     <section class="fast-flash container" id="how-it-works">
         <div class="section-heading">
             <h2>Cepat Seperti <em>Kilat</em></h2>
-            <p>Galang dana secepat kilat! Tingkatkan kampanye Anda hanya dalam semenit dengan platform penggalangan dana kami.</p>
+            <p>Galang dana secepat kilat! Tingkatkan kampanye Anda hanya dalam semenit dengan platform penggalangan dana
+                kami.</p>
         </div>
         <div class="flash-grid">
             <div class="flash-card">
                 <div class="icon">🚀</div>
                 <h3>Nyalakan Dampak</h3>
-                <p>Bagikan tujuan Anda dan dampak positif yang dibawanya. Jelaskan dengan jelas bagaimana kontribusi akan membawa perubahan berarti.</p>
+                <p>Bagikan tujuan Anda dan dampak positif yang dibawanya. Jelaskan dengan jelas bagaimana kontribusi
+                    akan membawa perubahan berarti.</p>
             </div>
             <div class="flash-card">
                 <div class="icon">⚡</div>
                 <h3>Sebarkan Kebaikan</h3>
-                <p>Manfaatkan kecepatan media sosial dan jaringan online. Bagikan kampanye penggalangan dana Anda dengan cepat ke berbagai platform.</p>
+                <p>Manfaatkan kecepatan media sosial dan jaringan online. Bagikan kampanye penggalangan dana Anda dengan
+                    cepat ke berbagai platform.</p>
             </div>
             <div class="flash-card">
                 <div class="icon">🌍</div>
                 <h3>Terhubung Secara Global</h3>
-                <p>Bangun jaringan sosial yang kuat di sekitar tujuan Anda. Dorong pendukung untuk membagikan kampanye di komunitas lokal mereka.</p>
+                <p>Bangun jaringan sosial yang kuat di sekitar tujuan Anda. Dorong pendukung untuk membagikan kampanye
+                    di komunitas lokal mereka.</p>
             </div>
         </div>
     </section>
@@ -132,22 +140,30 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
     <section class="urgent-fund container" id="kampanye">
         <div class="section-heading">
             <h2>Penggalangan Dana Mendesak!</h2>
-            <p>Waktu sangat berharga! Bergabunglah dengan misi kami SEKARANG untuk memberikan dampak langsung. Setiap detik sangat berarti!</p>
+            <p>Waktu sangat berharga! Bergabunglah dengan misi kami SEKARANG untuk memberikan dampak langsung. Setiap
+                detik sangat berarti!</p>
         </div>
 
         <form action="index.php#kampanye" method="GET" class="search-filter">
             <input type="text" name="q" placeholder="Cari kampanye..." value="<?php echo htmlspecialchars($q); ?>">
             <select name="kategori">
                 <option value="">Semua Kategori</option>
-                <option value="Bencana Alam" <?php if ($kategori == 'Bencana Alam') echo 'selected'; ?>>Bencana Alam</option>
-                <option value="Pendidikan" <?php if ($kategori == 'Pendidikan') echo 'selected'; ?>>Pendidikan</option>
-                <option value="Kesehatan" <?php if ($kategori == 'Kesehatan') echo 'selected'; ?>>Kesehatan</option>
-                <option value="Lingkungan" <?php if ($kategori == 'Lingkungan') echo 'selected'; ?>>Lingkungan</option>
+                <option value="Bencana Alam" <?php if ($kategori == 'Bencana Alam')
+                    echo 'selected'; ?>>Bencana Alam
+                </option>
+                <option value="Pendidikan" <?php if ($kategori == 'Pendidikan')
+                    echo 'selected'; ?>>Pendidikan</option>
+                <option value="Kesehatan" <?php if ($kategori == 'Kesehatan')
+                    echo 'selected'; ?>>Kesehatan</option>
+                <option value="Lingkungan" <?php if ($kategori == 'Lingkungan')
+                    echo 'selected'; ?>>Lingkungan</option>
             </select>
             <select name="lokasi">
                 <option value="">Lokasi</option>
-                <option value="Jawa" <?php if ($lokasi == 'Jawa') echo 'selected'; ?>>Jawa</option>
-                <option value="Luar Jawa" <?php if ($lokasi == 'Luar Jawa') echo 'selected'; ?>>Luar Jawa</option>
+                <option value="Jawa" <?php if ($lokasi == 'Jawa')
+                    echo 'selected'; ?>>Jawa</option>
+                <option value="Luar Jawa" <?php if ($lokasi == 'Luar Jawa')
+                    echo 'selected'; ?>>Luar Jawa</option>
             </select>
             <button type="submit" class="btn-primary" style="padding: 0.8rem 1.5rem;">Cari</button>
         </form>
@@ -156,18 +172,22 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
             <?php if (count($kampanyes) > 0): ?>
                 <?php foreach ($kampanyes as $k):
                     $progress = ($k['target_dana'] > 0) ? ($k['dana_terkumpul'] / $k['target_dana']) * 100 : 0;
-                    if ($progress > 100) $progress = 100;
+                    if ($progress > 100)
+                        $progress = 100;
                     $date1 = new DateTime();
                     $date2 = new DateTime($k['batas_waktu']);
                     $interval = $date1->diff($date2);
                     $days_left = $interval->format('%a');
-                ?>
+                    ?>
                     <a href="detail.php?id=<?php echo $k['id']; ?>" class="campaign-card">
-                        <img src="<?php echo htmlspecialchars($k['gambar']); ?>" alt="<?php echo htmlspecialchars($k['judul_kampanye']); ?>" class="card-img" onerror="this.onerror=null;this.src='uploads/placeholder.svg';">
+                        <img src="<?php echo htmlspecialchars($k['gambar']); ?>"
+                            alt="<?php echo htmlspecialchars($k['judul_kampanye']); ?>" class="card-img"
+                            onerror="this.onerror=null;this.src='uploads/placeholder.svg';">
                         <div class="card-body">
-                            <span class="card-category"><?php echo htmlspecialchars($k['kategori']); ?> <span class="check-icon">✔</span></span>
+                            <span class="card-category"><?php echo htmlspecialchars($k['kategori']); ?> <span
+                                    class="check-icon">✔</span></span>
                             <h3 class="card-title"><?php echo htmlspecialchars($k['judul_kampanye']); ?></h3>
-                            
+
                             <div class="progress-container">
                                 <div class="progress-fill" style="width: <?php echo $progress; ?>%;"></div>
                             </div>
@@ -199,7 +219,7 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
             <p class="pre-title">Jadilah Bagian Dari Penggalang Dana Bersama Lebih Dari</p>
             <h2 class="huge-number">217,924+</h2>
             <p class="post-title">Orang Dari Seluruh Dunia Telah Bergabung</p>
-            <a href="login.php" class="btn-primary">Bergabunglah Sekarang!</a>
+            <a href="auth/login.php" class="btn-primary">Bergabunglah Sekarang!</a>
         </div>
     </section>
 
@@ -270,4 +290,5 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
         </div>
     </footer>
 </body>
+
 </html>

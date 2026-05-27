@@ -1,9 +1,9 @@
 <?php
 session_start();
-require 'koneksi.php';
+require '../config/koneksi.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'pengelola') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -39,8 +39,9 @@ if (isset($_GET['delete'])) {
             $stmt_del = $conn->prepare("DELETE FROM kampanye WHERE id = ?");
             $stmt_del->bind_param("i", $id_to_delete);
             if ($stmt_del->execute()) {
-                if (file_exists($row['gambar'])) {
-                    unlink($row['gambar']);
+                $file_path = "../" . $row['gambar'];
+                if (file_exists($file_path) && $row['gambar'] != 'uploads/placeholder.svg') {
+                    unlink($file_path);
                 }
                 $success = "Kampanye berhasil dihapus.";
             } else {
@@ -63,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $gambar = "";
     if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] == 0) {
-        $target_dir = "uploads/";
+        $target_dir = "../uploads/";
         if (!is_dir($target_dir))
             mkdir($target_dir, 0777, true);
         $file_name = time() . '_' . basename($_FILES["gambar"]["name"]);
         $target_file = $target_dir . $file_name;
         if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
-            $gambar = $target_file;
+            $gambar = "uploads/" . $file_name;
         }
     }
 
@@ -127,7 +128,7 @@ if (isset($_GET['edit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Pengelola - PeduliSemua</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <style>
         .form-layout {
             display: grid;
@@ -144,12 +145,12 @@ if (isset($_GET['edit'])) {
 <body>
 
     <header>
-        <a href="index.php" class="logo"><span class="logo-icon">❇</span> PeduliSemua</a>
+        <a href="../index.php" class="logo"><span class="logo-icon">❇</span> PeduliSemua</a>
         <nav>
             <ul>
-                <li><a href="index.php">Lihat Web</a></li>
+                <li><a href="../index.php">Lihat Web</a></li>
                 <li><a href="kelola_donasi.php">Verifikasi Donasi</a></li>
-                <li><a href="logout.php" class="btn-login"
+                <li><a href="../auth/logout.php" class="btn-login"
                         style="background:var(--error); border-color:var(--error); color:white;">Logout</a></li>
             </ul>
         </nav>
@@ -232,7 +233,7 @@ if (isset($_GET['edit'])) {
                         <input type="file" name="gambar" class="form-control" accept="image/*">
                         <?php if ($edit_data && $edit_data['gambar']): ?>
                             <div style="margin-top: 8px;">
-                                <img src="<?php echo htmlspecialchars($edit_data['gambar']); ?>" alt="Preview"
+                                <img src="../<?php echo htmlspecialchars($edit_data['gambar']); ?>" alt="Preview"
                                     style="max-height: 80px; border-radius: 6px; border: 1px solid var(--border);">
                             </div>
                         <?php endif; ?>
@@ -271,7 +272,7 @@ if (isset($_GET['edit'])) {
                             <tr>
                                 <td style="padding: 10px; border-bottom: 1px solid var(--border); width: 120px;">
                                     <div style="position: relative;">
-                                        <img src="<?php echo htmlspecialchars($k['gambar']); ?>" alt="Gambar"
+                                        <img src="../<?php echo htmlspecialchars($k['gambar']); ?>" alt="Gambar"
                                             style="width: 90px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); display: block;">
                                         <?php if ($k['gambar'] == 'uploads/placeholder.svg'): ?>
                                             <span

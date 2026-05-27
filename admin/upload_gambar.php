@@ -1,10 +1,10 @@
 <?php
 session_start();
-require 'koneksi.php';
+require '../config/koneksi.php';
 
 // Hanya pengelola yang bisa upload gambar
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'pengelola') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['kampanye_id'])) {
     }
 
     // Upload file baru
-    $target_dir = "uploads/";
+    $target_dir = "../uploads/";
     if (!is_dir($target_dir))
         mkdir($target_dir, 0777, true);
 
@@ -62,13 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['kampanye_id'])) {
     if (move_uploaded_file($_FILES['gambar']['tmp_name'], $target_file)) {
         // Hapus gambar lama jika bukan placeholder
         $old_gambar = $row['gambar'];
-        if ($old_gambar && $old_gambar != 'uploads/placeholder.svg' && file_exists($old_gambar)) {
-            unlink($old_gambar);
+        $old_file_path = "../" . $old_gambar;
+        if ($old_gambar && $old_gambar != 'uploads/placeholder.svg' && file_exists($old_file_path)) {
+            unlink($old_file_path);
         }
 
         // Update DB
+        $db_gambar = "uploads/" . $file_name;
         $stmt_update = $conn->prepare("UPDATE kampanye SET gambar = ? WHERE id = ?");
-        $stmt_update->bind_param("si", $target_file, $kampanye_id);
+        $stmt_update->bind_param("si", $db_gambar, $kampanye_id);
 
         if ($stmt_update->execute()) {
             $_SESSION['flash_success'] = "Gambar kampanye berhasil diperbarui.";
