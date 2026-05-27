@@ -24,10 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
-        // Since we injected directly, we might not have hashed passwords. 
-        // For simplicity based on prompt, we just compare strings.
-        // In real app, use password_verify
-        if ($password === $user['password']) {
+        // Update to handle password_verify for new registered users and plaintext for old users
+        if (password_verify($password, $user['password']) || $password === $user['password']) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
@@ -83,10 +81,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="password" name="password" class="form-control" placeholder="Masukkan Password" required>
                 </div>
 
-                <button type="submit" class="btn-primary" style="margin-top: 1rem;">Login</button>
+                <button type="submit" class="btn-primary" style="margin-top: 1rem; width: 100%;">Login</button>
             </form>
             
-            <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+            <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                Belum punya akun? <a href="register.php" style="color: var(--primary); text-decoration: none; font-weight: bold;">Daftar di sini</a>
+            </p>
+            <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
                 <a href="index.php" style="color: var(--primary); text-decoration: none;">&larr; Kembali ke Halaman Utama</a>
             </p>
         </div>
