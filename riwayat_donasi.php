@@ -57,7 +57,7 @@ $history = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 <body>
 
     <header>
-        <a href="index.php" class="logo"><span>⚡</span> PeduliSemua</a>
+        <a href="index.php" class="logo"><span class="logo-icon">❇</span> PeduliSemua</a>
         <nav>
             <ul>
                 <li><a href="index.php">Beranda</a></li>

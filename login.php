@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <header>
-        <a href="index.php" class="logo"><span>⚡</span> PeduliSemua</a>
+        <a href="index.php" class="logo"><span class="logo-icon">❇</span> PeduliSemua</a>
     </header>
 
     <div class="container center-card-layout">
