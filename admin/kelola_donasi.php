@@ -69,18 +69,61 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
     }
 }
 
-// Get all donations for this pengelola's campaigns
+// Get all campaigns for this pengelola
+$stmt_kamp = $conn->prepare("SELECT id, judul_kampanye, dana_terkumpul FROM kampanye WHERE pengelola_id = ? ORDER BY batas_waktu DESC");
+$stmt_kamp->bind_param("i", $pengelola_id);
+$stmt_kamp->execute();
+$kampanye_list = $stmt_kamp->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Get all donations for this pengelola's campaigns, grouped by kampanye
 $stmt = $conn->prepare("
-    SELECT d.*, k.judul_kampanye, u.nama_lengkap as nama_donatur 
+    SELECT d.*, k.judul_kampanye, k.id as kid, u.nama_lengkap as nama_donatur 
     FROM donasi d 
     JOIN kampanye k ON d.kampanye_id = k.id 
     JOIN users u ON d.donatur_id = u.id 
     WHERE k.pengelola_id = ? 
-    ORDER BY d.tanggal_donasi DESC
+    ORDER BY k.id ASC, d.tanggal_donasi DESC
 ");
 $stmt->bind_param("i", $pengelola_id);
 $stmt->execute();
-$donasis = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$all_donasi = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Group donations by campaign
+$grouped = [];
+foreach ($all_donasi as $d) {
+    $kid = $d['kid'];
+    if (!isset($grouped[$kid])) {
+        $grouped[$kid] = [
+            'judul' => $d['judul_kampanye'],
+            'donasi' => [],
+            'summary' => [
+                'VERIFIED' => ['count' => 0, 'total' => 0],
+                'PENDING' => ['count' => 0, 'total' => 0],
+                'REJECTED' => ['count' => 0, 'total' => 0],
+            ]
+        ];
+    }
+    $grouped[$kid]['donasi'][] = $d;
+    $grouped[$kid]['summary'][$d['status']]['count']++;
+    $grouped[$kid]['summary'][$d['status']]['total'] += $d['nominal'];
+}
+
+// Calculate overall totals
+$overall_verified = 0;
+$overall_pending = 0;
+$overall_rejected = 0;
+$overall_verified_count = 0;
+$overall_pending_count = 0;
+$overall_rejected_count = 0;
+
+foreach ($grouped as $g) {
+    $overall_verified += $g['summary']['VERIFIED']['total'];
+    $overall_pending += $g['summary']['PENDING']['total'];
+    $overall_rejected += $g['summary']['REJECTED']['total'];
+    $overall_verified_count += $g['summary']['VERIFIED']['count'];
+    $overall_pending_count += $g['summary']['PENDING']['count'];
+    $overall_rejected_count += $g['summary']['REJECTED']['count'];
+}
 
 ?>
 <!DOCTYPE html>
@@ -120,77 +163,111 @@ $donasis = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             </div>
         <?php endif; ?>
 
-        <div class="glass-card" style="padding: 0; overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead style="background: rgba(255,255,255,0.05);">
-                    <tr>
-                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Tanggal
-                        </th>
-                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Donatur
-                        </th>
-                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Kampanye
-                        </th>
-                        <th style="padding: 15px; text-align: left; border-bottom: 1px solid var(--border);">Nominal
-                        </th>
-                        <th style="padding: 15px; text-align: center; border-bottom: 1px solid var(--border);">Bukti
-                        </th>
-                        <th style="padding: 15px; text-align: center; border-bottom: 1px solid var(--border);">Status
-                        </th>
-                        <th style="padding: 15px; text-align: center; border-bottom: 1px solid var(--border);">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (count($donasis) > 0): ?>
-                        <?php foreach ($donasis as $d):
-                            $status_class = '';
-                            if ($d['status'] == 'VERIFIED')
-                                $status_class = 'status-verified';
-                            else if ($d['status'] == 'PENDING')
-                                $status_class = 'status-pending';
-                            else
-                                $status_class = 'status-rejected';
-                            ?>
-                            <tr>
-                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">
-                                    <?php echo date('d/m/Y H:i', strtotime($d['tanggal_donasi'])); ?>
-                                </td>
-                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">
-                                    <?php echo htmlspecialchars($d['nama_donatur']); ?>
-                                </td>
-                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">
-                                    <?php echo htmlspecialchars($d['judul_kampanye']); ?>
-                                </td>
-                                <td style="padding: 15px; border-bottom: 1px solid var(--border);">Rp
-                                    <?php echo number_format($d['nominal'], 0, ',', '.'); ?>
-                                </td>
-                                <td style="padding: 15px; border-bottom: 1px solid var(--border); text-align: center;">
-                                    <a href="../<?php echo htmlspecialchars($d['bukti_transfer']); ?>" target="_blank"
-                                        style="color: var(--primary);">Lihat Bukti</a>
-                                </td>
-                                <td style="padding: 15px; border-bottom: 1px solid var(--border); text-align: center;">
-                                    <span class="status-badge <?php echo $status_class; ?>"><?php echo $d['status']; ?></span>
-                                </td>
-                                <td style="padding: 15px; border-bottom: 1px solid var(--border); text-align: center;">
-                                    <?php if ($d['status'] == 'PENDING'): ?>
-                                        <a href="kelola_donasi.php?action=verify&id=<?php echo $d['id']; ?>" class="btn-primary"
-                                            style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Terima</a>
-                                        <a href="kelola_donasi.php?action=reject&id=<?php echo $d['id']; ?>" class="btn-primary"
-                                            style="background: var(--error); border-color: var(--error); padding: 5px 10px; font-size: 0.8rem;"
-                                            onclick="return confirm('Tolak donasi ini?');">Tolak</a>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="7" style="padding: 15px; text-align: center;">Belum ada donasi masuk.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+        <!-- Overall Summary — Rubric #32 -->
+        <div class="summary-grid">
+            <div class="summary-card" style="border-bottom: 4px solid #16a34a;">
+                <h4>Total Verified</h4>
+                <div class="summary-value" style="color: #16a34a;">Rp <?php echo number_format($overall_verified, 0, ',', '.'); ?></div>
+                <div class="summary-count">(<?php echo $overall_verified_count; ?> donasi)</div>
+            </div>
+            <div class="summary-card" style="border-bottom: 4px solid #eab308;">
+                <h4>Total Pending</h4>
+                <div class="summary-value" style="color: #a16207;">Rp <?php echo number_format($overall_pending, 0, ',', '.'); ?></div>
+                <div class="summary-count">(<?php echo $overall_pending_count; ?> donasi)</div>
+            </div>
+            <div class="summary-card" style="border-bottom: 4px solid #dc2626;">
+                <h4>Total Rejected</h4>
+                <div class="summary-value" style="color: #dc2626;">Rp <?php echo number_format($overall_rejected, 0, ',', '.'); ?></div>
+                <div class="summary-count">(<?php echo $overall_rejected_count; ?> donasi)</div>
+            </div>
         </div>
+
+        <!-- Per-campaign sections — Rubric #22, #30, #31 -->
+        <?php if (count($grouped) > 0): ?>
+            <?php foreach ($grouped as $kid => $camp): ?>
+                <div class="campaign-section">
+                    <div class="glass-card" style="margin-bottom: 1.5rem;">
+                        <div class="campaign-section-header">
+                            <h3>📋 <?php echo htmlspecialchars($camp['judul']); ?></h3>
+                            <div class="campaign-section-stats">
+                                <span style="background: #dcfce7; color: #16a34a;">
+                                    ✅ Verified: Rp <?php echo number_format($camp['summary']['VERIFIED']['total'], 0, ',', '.'); ?>
+                                    (<?php echo $camp['summary']['VERIFIED']['count']; ?>)
+                                </span>
+                                <span style="background: #fef9c3; color: #a16207;">
+                                    ⏳ Pending: Rp <?php echo number_format($camp['summary']['PENDING']['total'], 0, ',', '.'); ?>
+                                    (<?php echo $camp['summary']['PENDING']['count']; ?>)
+                                </span>
+                                <span style="background: #fee2e2; color: #dc2626;">
+                                    ❌ Rejected: Rp <?php echo number_format($camp['summary']['REJECTED']['total'], 0, ',', '.'); ?>
+                                    (<?php echo $camp['summary']['REJECTED']['count']; ?>)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style="padding: 0; overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead style="background: rgba(255,255,255,0.05);">
+                                    <tr>
+                                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border);">Tanggal</th>
+                                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border);">Donatur</th>
+                                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border);">Nominal</th>
+                                        <th style="padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border);">Bukti</th>
+                                        <th style="padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border);">Status</th>
+                                        <th style="padding: 12px 15px; text-align: center; border-bottom: 1px solid var(--border);">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($camp['donasi'] as $d):
+                                        $status_class = '';
+                                        if ($d['status'] == 'VERIFIED')
+                                            $status_class = 'status-verified';
+                                        else if ($d['status'] == 'PENDING')
+                                            $status_class = 'status-pending';
+                                        else
+                                            $status_class = 'status-rejected';
+                                        ?>
+                                        <tr>
+                                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border);">
+                                                <?php echo date('d/m/Y H:i', strtotime($d['tanggal_donasi'])); ?>
+                                            </td>
+                                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border);">
+                                                <?php echo htmlspecialchars($d['nama_donatur']); ?>
+                                            </td>
+                                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border);">Rp
+                                                <?php echo number_format($d['nominal'], 0, ',', '.'); ?>
+                                            </td>
+                                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: center;">
+                                                <a href="../<?php echo htmlspecialchars($d['bukti_transfer']); ?>" target="_blank"
+                                                    style="color: var(--primary);">Lihat Bukti</a>
+                                            </td>
+                                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: center;">
+                                                <span class="status-badge <?php echo $status_class; ?>"><?php echo $d['status']; ?></span>
+                                            </td>
+                                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border); text-align: center;">
+                                                <?php if ($d['status'] == 'PENDING'): ?>
+                                                    <a href="kelola_donasi.php?action=verify&id=<?php echo $d['id']; ?>" class="btn-primary"
+                                                        style="padding: 5px 10px; font-size: 0.8rem; margin-right: 5px;">Terima</a>
+                                                    <a href="kelola_donasi.php?action=reject&id=<?php echo $d['id']; ?>" class="btn-primary"
+                                                        style="background: var(--error); border-color: var(--error); padding: 5px 10px; font-size: 0.8rem;"
+                                                        onclick="return confirm('Tolak donasi ini?');">Tolak</a>
+                                                <?php else: ?>
+                                                    -
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="glass-card" style="text-align: center; padding: 3rem;">
+                <p>Belum ada donasi masuk untuk kampanye Anda.</p>
+            </div>
+        <?php endif; ?>
     </div>
 
 </body>

@@ -118,6 +118,7 @@ $days_left = $interval->format('%a');
         </div>
     </div>
 
+    <script src="script.js"></script>
 </body>
 
 </html>

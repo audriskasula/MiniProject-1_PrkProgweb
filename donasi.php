@@ -46,6 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validasi
     if ($nominal < 10000) {
         $error = "Minimal donasi adalah Rp 10.000";
+    } elseif (!isset($_FILES['bukti_transfer']) || $_FILES['bukti_transfer']['error'] != 0 || $_FILES['bukti_transfer']['size'] == 0) {
+        $error = "Bukti transfer wajib diupload (format JPG).";
     } else {
         // Upload file
         $target_dir = "uploads/";
@@ -57,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $target_file = $target_dir . $file_name;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        $allowed_types = array("jpg", "jpeg", "png", "pdf");
+        $allowed_types = array("jpg", "jpeg");
 
         if (in_array($imageFileType, $allowed_types)) {
             if (move_uploaded_file($_FILES["bukti_transfer"]["tmp_name"], $target_file)) {
@@ -74,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $error = "Maaf, terjadi kesalahan saat mengupload file.";
             }
         } else {
-            $error = "Hanya file JPG, JPEG, PNG, dan PDF yang diperbolehkan.";
+            $error = "Hanya file JPG yang diperbolehkan.";
         }
     }
 }
@@ -172,8 +174,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="form-group">
-                        <label>Bukti Transfer (PDF/JPG/PNG)</label>
-                        <input type="file" name="bukti_transfer" class="form-control" accept=".jpg,.jpeg,.png,.pdf"
+                        <label>Bukti Transfer (JPG)</label>
+                        <input type="file" name="bukti_transfer" class="form-control" accept=".jpg,.jpeg"
                             required>
                     </div>
 
@@ -184,6 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
+    <script src="script.js"></script>
 </body>
 
 </html>

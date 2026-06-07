@@ -11,30 +11,37 @@ $offset = ($page - 1) * $limit;
 $q = isset($_GET['q']) ? $_GET['q'] : '';
 $kategori = isset($_GET['kategori']) ? $_GET['kategori'] : '';
 $lokasi = isset($_GET['lokasi']) ? $_GET['lokasi'] : '';
+$tanggal = isset($_GET['tanggal']) ? $_GET['tanggal'] : '';
 
-// Base query
-$whereClause = "WHERE batas_waktu > NOW()";
+// Base query — JOIN users so we can search by penyelenggara name
+$whereClause = "WHERE kampanye.batas_waktu > NOW()";
 $params = [];
 $types = "";
 
 if (!empty($q)) {
-    $whereClause .= " AND judul_kampanye LIKE ?";
+    $whereClause .= " AND (kampanye.judul_kampanye LIKE ? OR users.nama_lengkap LIKE ?)";
     $params[] = "%$q%";
-    $types .= "s";
+    $params[] = "%$q%";
+    $types .= "ss";
 }
 if (!empty($kategori)) {
-    $whereClause .= " AND kategori = ?";
+    $whereClause .= " AND kampanye.kategori = ?";
     $params[] = $kategori;
     $types .= "s";
 }
 if (!empty($lokasi)) {
-    $whereClause .= " AND lokasi = ?";
+    $whereClause .= " AND kampanye.lokasi = ?";
     $params[] = $lokasi;
+    $types .= "s";
+}
+if (!empty($tanggal)) {
+    $whereClause .= " AND kampanye.batas_waktu = ?";
+    $params[] = $tanggal;
     $types .= "s";
 }
 
 // Count total rows for pagination
-$countQuery = "SELECT COUNT(id) as total FROM kampanye $whereClause";
+$countQuery = "SELECT COUNT(kampanye.id) as total FROM kampanye JOIN users ON kampanye.pengelola_id = users.id $whereClause";
 $stmtCount = $conn->prepare($countQuery);
 if ($types) {
     $stmtCount->bind_param($types, ...$params);
@@ -83,6 +90,7 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
         </nav>
         <div>
             <?php if (isset($_SESSION['user_id'])): ?>
+                <span style="margin-right: 10px; font-weight: 500; color: #333;">Halo, <?php echo htmlspecialchars($_SESSION['nama_lengkap']); ?></span>
                 <?php if ($_SESSION['role'] == 'pengelola'): ?>
                     <a href="admin/dashboard_pengelola.php" class="btn-login"
                         style="margin-right: 10px; background: #fff; border: 1px solid #eaeaea;">Dashboard</a>
@@ -144,8 +152,8 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
                 detik sangat berarti!</p>
         </div>
 
-        <form action="index.php#kampanye" method="GET" class="search-filter">
-            <input type="text" name="q" placeholder="Cari kampanye..." value="<?php echo htmlspecialchars($q); ?>">
+        <form action="index.php#kampanye" method="GET" class="search-filter" style="flex-wrap: wrap;">
+            <input type="text" name="q" placeholder="Cari kampanye atau nama penyelenggara..." value="<?php echo htmlspecialchars($q); ?>">
             <select name="kategori">
                 <option value="">Semua Kategori</option>
                 <option value="Bencana Alam" <?php if ($kategori == 'Bencana Alam')
@@ -165,6 +173,7 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
                 <option value="Luar Jawa" <?php if ($lokasi == 'Luar Jawa')
                     echo 'selected'; ?>>Luar Jawa</option>
             </select>
+            <input type="date" name="tanggal" value="<?php echo htmlspecialchars($tanggal); ?>" placeholder="Batas Waktu" style="max-width: 180px;">
             <button type="submit" class="btn-primary" style="padding: 0.8rem 1.5rem;">Cari</button>
         </form>
 
@@ -207,7 +216,7 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
         <?php if ($totalPages > 1): ?>
             <div class="pagination">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?php echo $i; ?>&q=<?php echo urlencode($q); ?>&kategori=<?php echo urlencode($kategori); ?>&lokasi=<?php echo urlencode($lokasi); ?>#kampanye"
+                    <a href="?page=<?php echo $i; ?>&q=<?php echo urlencode($q); ?>&kategori=<?php echo urlencode($kategori); ?>&lokasi=<?php echo urlencode($lokasi); ?>&tanggal=<?php echo urlencode($tanggal); ?>#kampanye"
                         class="<?php echo ($i == $page) ? 'active' : ''; ?>"><?php echo $i; ?></a>
                 <?php endfor; ?>
             </div>
@@ -289,6 +298,7 @@ $kampanyes = $result->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
     </footer>
+    <script src="script.js"></script>
 </body>
 
 </html>
